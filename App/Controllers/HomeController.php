@@ -4,8 +4,8 @@ namespace App\Controllers;
 
 class HomeController
 {
-  public function index(): void
+  public function index()
   {
-    echo "Welcome to the Home Page!";
+    \App\Helpers\JsonResponseHelper::send(['message' => 'Welcome to the Home Page!']);
   }
 }
