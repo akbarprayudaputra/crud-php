@@ -38,9 +38,9 @@ class Router
     $action = $this->routes[$method][$uri] ?? null;
 
     if (!$action) {
-      http_response_code(404);
-      echo "404 Not Found";
-      return;
+      \App\Helpers\JsonResponseHelper::send([
+        'error' => '404 Not Found'
+      ], 404);
     }
 
     [$controller, $method] = $action;
