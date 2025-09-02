@@ -1,0 +1,16 @@
+{
+  "name": "akbarprayuda/crud",
+  "description": "Simple Crud with PHP",
+  "autoload": {
+    "psr-4": {
+      "App\\": "App/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Akbar Prayuda",
+      "email": "akbarprayuda210806@gmail.com"
+    }
+  ],
+  "require": {}
+}
