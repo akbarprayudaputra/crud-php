@@ -4,46 +4,56 @@ namespace App\Config;
 
 class Router
 {
-  private $routes = [];
+  private array $routes = [];
 
-  public function get($uri, $action)
+  public function get(string $uri, array $action): void
   {
     $this->addRoute('GET', $uri, $action);
   }
 
-  public function post($uri, $action)
+  public function post(string $uri, array $action): void
   {
     $this->addRoute('POST', $uri, $action);
   }
 
-  public function put($uri, $action)
+  public function put(string $uri, array $action): void
   {
     $this->addRoute('PUT', $uri, $action);
   }
 
-  public function delete($uri, $action)
+  public function delete(string $uri, array $action): void
   {
     $this->addRoute('DELETE', $uri, $action);
   }
 
-  private function addRoute($method, $uri, $action)
+  private function addRoute(string $method, string $uri, array $action): void
   {
-    $this->routes[$method][$uri] = $action;
+    $this->routes[$method][] = [
+      'pattern' => rtrim($uri, '/'),
+      'action' => $action
+    ];
   }
 
-  public function dispatch($method, $uri)
+  public function dispatch(string $method, string $uri): void
   {
     $uri = rtrim($uri, '/') ?: '/';
 
-    $action = $this->routes[$method][$uri] ?? null;
+    foreach ($this->routes[$method] ?? [] as $route) {
+      $pattern = preg_replace('/\{[a-zA-Z_]+\}/', '([a-zA-Z0-9_-]+)', $route['pattern']);
+      $pattern = str_replace('/', '\/', $pattern);
+      $regex = '/^' . $pattern . '$/';
 
-    if (!$action) {
-      \App\Helpers\JsonResponseHelper::send([
-        'error' => '404 Not Found'
-      ], 404);
+      if (preg_match($regex, $uri, $matches)) {
+        array_shift($matches); // remove full match
+        [$controller, $methodName] = $route['action'];
+        (new $controller)->$methodName(...$matches);
+        exit;
+      }
     }
 
-    [$controller, $method] = $action;
-    (new $controller)->$method();
+    // Route not found
+    \App\Helpers\JsonResponseHelper::send([
+      'error' => '404 Not Found'
+    ], 404);
   }
 }

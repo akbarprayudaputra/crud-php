@@ -13,13 +13,13 @@ class UserRepository extends \App\Config\Repository\RepositoryAbstract implement
 
   public function all(): array
   {
-    $stmt = $this->db->query("SELECT * FROM {$this->table}");
+    $stmt = $this->db->query("SELECT id, name, username, email FROM {$this->table}");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public function find(int $id): array|false
   {
-    $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
+    $stmt = $this->db->prepare("SELECT id, name, username, email FROM {$this->table} WHERE id = ?");
     $stmt->execute([$id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
@@ -28,6 +28,12 @@ class UserRepository extends \App\Config\Repository\RepositoryAbstract implement
   {
     $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = ?");
     return $stmt->execute([$id]);
+  }
+
+  public function deleteAll(): bool
+  {
+    $stmt = $this->db->prepare("DELETE FROM {$this->table}");
+    return $stmt->execute();
   }
 
   public function create(\App\Models\User $user): bool
@@ -55,5 +61,19 @@ class UserRepository extends \App\Config\Repository\RepositoryAbstract implement
       password_hash($user->getPassword(), PASSWORD_BCRYPT),
       $id
     ]);
+  }
+
+  public function findByEmail(string $email): array|false
+  {
+    $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE email = ?");
+    $stmt->execute([$email]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function findByUsername(string $username): array|false
+  {
+    $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE username = ?");
+    $stmt->execute([$username]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 }

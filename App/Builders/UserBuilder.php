@@ -6,27 +6,13 @@ use App\Models\User;
 
 class UserBuilder
 {
+  private int $id = 0;
   private string
-  $name,
-  $username,
-  $email,
-  $password;
+  $name = '',
+  $username = '',
+  $email = '',
+  $password = '';
 
-
-  public function getName(): string
-  {
-    return $this->name;
-  }
-
-  public function getUsername(): string
-  {
-    return $this->username;
-  }
-
-  public function getEmail(): string
-  {
-    return $this->email;
-  }
 
   public function getPassword(): string
   {
@@ -57,9 +43,36 @@ class UserBuilder
     return $this;
   }
 
+  public function getId(): int
+  {
+    return $this->id;
+  }
+
+  public function getName(): string
+  {
+    return $this->name;
+  }
+
+  public function getUsername(): string
+  {
+    return $this->username;
+  }
+
+  public function getEmail(): string
+  {
+    return $this->email;
+  }
+
+  public function setId(int $id): self
+  {
+    $this->id = $id;
+    return $this;
+  }
+
   public function build(): User
   {
     return new User(
+      $this->id,
       $this->name,
       $this->username,
       $this->email,
@@ -67,3 +80,4 @@ class UserBuilder
     );
   }
 }
+

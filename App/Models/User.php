@@ -42,7 +42,7 @@ class User extends Model
   $email,
   $password;
 
-  public function __construct($name, $username, $email, $password)
+  public function __construct(int $id, string $name, string $username, string $email, string $password)
   {
     $this->name = $name;
     $this->username = $username;
